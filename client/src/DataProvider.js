@@ -4,11 +4,11 @@ export default class DataProvider {
  
     static getCurveData(){
 
-        return axios.get('./data/curve.csv')
+        return axios.get('https://raw.githubusercontent.com/HongyuJiang/data-fitting/master/client/src/data/curve.csv')
     }
     static getScatterData(){
 
-        return axios.get('./data/scatter.csv')
+        return axios.get('https://raw.githubusercontent.com/HongyuJiang/data-fitting/master/client/src/data/scatter.csv')
     }
 
 }
