@@ -49,22 +49,7 @@ export default class Drawing {
 
 	static setScale(scales){
 
-		if(scales['x'] != undefined){
-
-			globalXScale = scales['x']
-		}
-
-		if(scales['y'] != undefined){
-
-			globalYScale = scales['y']
-		}
-
-		if(scales['s'] != undefined){
-
-			globalSScale = scales['s']
-		}
-
-		reDraw(scales)
+		this.reDraw(scales)
 	}
 
 	static getScales(){
@@ -74,13 +59,19 @@ export default class Drawing {
 
 	static reDraw(scales){
 
+		let xScale = scales['x']
+
+		let yScale = scales['y']
+
+		let sScale = scales['s']
+
 		drawElements.forEach(function(element){
 
 			if(scales['x'] != undefined){
 
 				if(element.type == 'circle'){
 
-					element.entity.attr('cx', d => globalXScale(d.x))
+					element.entity.attr('cx', d => xScale(d.x))
 				}
 
 				if(element.type == 'path'){
@@ -89,14 +80,14 @@ export default class Drawing {
 
 					let drawEle = element.entity[1]
 
-					generator.attr('x', d => globalXScale(d.x))
+					generator.x(d => xScale(d.x))
 
 					drawEle.attr('d', generator)
 				}
 
 				if(element.type == 'text'){
 
-					element.entity.attr('x', d => globalXScale(d.x))
+					element.entity.attr('x', d => xScale(d.x))
 				}
 			}
 
@@ -104,12 +95,12 @@ export default class Drawing {
 
 				if(element.type == 'circle'){
 
-					element.entity.attr('cy', d => globalYScale(d.y))
+					element.entity.attr('cy', d => yScale(d.y))
 				}
 
 				if(element.type == 'text'){
 
-					element.entity.attr('y', d => globalYScale(d.y))
+					element.entity.attr('y', d => yScale(d.y))
 				}
 			}
 
@@ -117,7 +108,7 @@ export default class Drawing {
 
 				if(element.type == 'text'){
 
-					element.entity.attr('x', d => globalSScale(d.label))
+					element.entity.attr('x', d => sScale(d.label))
 				}
 			}
 		})
@@ -127,8 +118,8 @@ export default class Drawing {
 
         let width = globalWidth
         let height = globalHeight
-
-        let sScale = globalSScale
+		
+		let xScale = globalXScale
 
         let yGridsData = [];
 		
@@ -159,8 +150,8 @@ export default class Drawing {
 		.enter()
 		.append('line')
 		.attr('class', 'gridline')
-		.attr('x1', d => sScale(d.label))
-		.attr('x2', d => sScale(d.label))
+		.attr('x1', d => xScale(d.x))
+		.attr('x2', d => xScale(d.x))
 		.attr('y1', 0)
 		.attr('y2', height)
 		.attr('stroke', 'black')
@@ -178,12 +169,7 @@ export default class Drawing {
 
         let curveGenerator = d3.line()
 		.curve(d3.curveBasis)
-		.x(d => {
-
-			console.log(d.x, xScale(d.x))
-
-			return xScale(d.x)
-		})
+		.x(d => xScale(d.x))
 		.y(d => yScale(d.y))
 		
         let curve = container
@@ -211,12 +197,7 @@ export default class Drawing {
 		.data(data)
 		.enter()
 		.append('circle')
-		.attr('cx', d => {
-
-			console.log(d.x, xScale(d.x))
-
-			return xScale(d.x)
-		})
+		.attr('cx', d => xScale(d.x))
 		.attr('cy', d => yScale(d.y))
 		.attr('r', 3)
 		.attr('or', 3)
@@ -272,14 +253,14 @@ export default class Drawing {
 
 		let height = globalHeight
 		
-		let sScale = globalSScale
+		let xScale = globalXScale
 
 		let circles = container
 		.selectAll('.axisCircles')
 		.data(data)
 		.enter()
 		.append('circle')
-		.attr('cx', d => sScale(d.label) )
+		.attr('cx', d => xScale(d.x) )
 		.attr('cy', height + 10)
 		.attr('r', 2)
 		
@@ -288,13 +269,13 @@ export default class Drawing {
 		.data(data)
 		.enter()
 		.append('text')
-		.attr('x', d => sScale(d.label))
+		.attr('x', d => xScale(d.x))
 		.attr('y', height + 20)
-		.attr('transform', 'rotate(45)')
+		//.attr('transform', 'rotate(45)')
 		.attr('text-anchor', 'left')
 		.attr('font-size', 11)
 		.attr('font-family', 'Arial')
-		.text(d => d.x)
+		.text(d => d.label)
 
 		drawElements.push({'type': 'circle', 'entity': circles})
 
@@ -313,6 +294,24 @@ export default class Drawing {
 			.attr("transform", "translate(" + width + ",0)")
 			.call(yAxis)
 			
+	}
+
+	static drawLabel(container, xValue, yValue){
+
+		let xScale = globalXScale
+
+		let yScale = globalYScale
+
+		let x = globalXScale(xValue)
+
+		let y = globalYScale(yValue)
+
+		let label = container.append("g")
+			.attr("transform", "translate(" + x + "," + y + ")");
+		
+		label.append('text')
+
+		//label.append('')
 	}
     
 }

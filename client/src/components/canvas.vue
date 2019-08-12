@@ -75,7 +75,7 @@ export default {
 		.style("pointer-events", "all")
 		.call(d3.zoom()
 		.scaleExtent([1, 8])
-		.translateExtent([[0, 0], [this.width + 90, this.height + 100]])
+		.translateExtent([[0, 0], [this.width, this.height]])
 		.on("zoom", this.zoomed))
 		.on('click', function(d){
 			
@@ -106,7 +106,7 @@ export default {
 
       let newX = d3.event.transform.rescaleX(xScale)
 
-      //Drawing.setScale({'x': newX})
+      Drawing.setScale({'x': newX})
 			
 			//this.canvas.select('#dynamicArea').attr("transform", d3.event.transform);
 			
